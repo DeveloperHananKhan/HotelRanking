@@ -17,7 +17,7 @@ export const HotelMaps: React.FC<HotelFormProps> = ({ coordinates, setCoordinate
   
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: 'AIzaSyArcw69VH8bxKS2_kFM6OeVnP5ldh659Tw', 
+    googleMapsApiKey: 'Api-Key', 
   })
 
   const [map, setMap] = React.useState<google.maps.Map | null>(null)
