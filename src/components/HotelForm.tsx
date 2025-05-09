@@ -20,12 +20,15 @@ import { v4 as uuidv4 } from "uuid";
 import { useNavigate, useParams } from "react-router-dom";
 import { HotelFormProps } from "../types/hotel";
 import PlacesAutocomplete, {
-  geocodeByAddress,getLatLng
+  geocodeByAddress,
+  getLatLng,
 } from "react-places-autocomplete";
 
-
 import { useEffect, useState } from "react";
-export const HotelForm: React.FC<HotelFormProps> = ({ coordinates, setCoordinates }) => {
+export const HotelForm: React.FC<HotelFormProps> = ({
+  coordinates,
+  setCoordinates,
+}) => {
   const navigate = useNavigate();
   const { id } = useParams();
   const hotels = useHotelStore((state) => state.hotels);
@@ -41,7 +44,7 @@ export const HotelForm: React.FC<HotelFormProps> = ({ coordinates, setCoordinate
   useEffect(() => {
     if (hotelToEdit) {
       reset(hotelToEdit);
-      setAddress(hotelToEdit.address || "")
+      setAddress(hotelToEdit.address || "");
     }
   }, [hotelToEdit, reset]);
 
@@ -65,24 +68,22 @@ export const HotelForm: React.FC<HotelFormProps> = ({ coordinates, setCoordinate
   };
   const handleChange = (address: string) => {
     setAddress(address);
-    setValue("address",address)
+    setValue("address", address);
   };
   const handleSelect = async (seletctedAdress: string) => {
     setAddress(seletctedAdress);
 
     try {
       const response = await geocodeByAddress(seletctedAdress);
-      
-      
+
       if (response && response.length > 0) {
         const formattedAddress = response[0].formatted_address;
-        const place_id = response[0].place_id;
         const latLng = await getLatLng(response[0]);
-        setCoordinates(latLng)
-        setValue("address", formattedAddress); 
+        setCoordinates(latLng);
+        setValue("address", formattedAddress);
       }
     } catch (error) {
-      console.error("Error fetching address: ",error);
+      console.error("Error fetching address: ", error);
     }
   };
 
@@ -127,46 +128,25 @@ export const HotelForm: React.FC<HotelFormProps> = ({ coordinates, setCoordinate
             />
           </FormControl>
           <PlacesAutocomplete
-  value={address}
-  onChange={handleChange}
-  onSelect={handleSelect}
->
-  {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
-    <div>
-      <FormControl isRequired mb={4}>
-        <FormLabel htmlFor="address">Address</FormLabel>
-        <Input
-          id="address"
-          {...getInputProps({
-            placeholder: 'Enter address',
-            className: 'location-search-input',
-          })}
-        />
-      </FormControl>
-
-      <Box>
-        {loading && <div>Loading...</div>}
-        {suggestions.map((suggestion) => {
-          const style = {
-            backgroundColor: suggestion.active ? "#e6f7ff" : "#fff",
-            padding: "5px 10px",
-            cursor: "pointer",
-          };
-          
-          return (
-            <Box
-              key={suggestion.placeId}
-              {...getSuggestionItemProps(suggestion, { style })}
-            >
-              {suggestion.description}
-            </Box>
-          );
-        })}
-      </Box>
-    </div>
-  )}
-</PlacesAutocomplete>
-
+            value={address}
+            onChange={handleChange}
+            onSelect={handleSelect}
+          >
+            {({ getInputProps }) => (
+              <div>
+                <FormControl isRequired mb={4}>
+                  <FormLabel htmlFor="address">Street Address</FormLabel>
+                  <Input
+                    id="address"
+                    {...getInputProps({
+                      placeholder: "Enter address",
+                      className: "location-search-input",
+                    })}
+                  />
+                </FormControl>
+              </div>
+            )}
+          </PlacesAutocomplete>
 
           <FormControl mb={4}>
             <FormLabel htmlFor="brand">Brand</FormLabel>
@@ -197,7 +177,7 @@ export const HotelForm: React.FC<HotelFormProps> = ({ coordinates, setCoordinate
               <option value="Huazhu">Huazhu</option>
             </Select>
           </FormControl>
-          
+
           <FormControl isRequired mb={4}>
             <FormLabel htmlFor="rating">Rating</FormLabel>
             <NumberInput
@@ -241,5 +221,3 @@ export const HotelForm: React.FC<HotelFormProps> = ({ coordinates, setCoordinate
     </>
   );
 };
-
-
